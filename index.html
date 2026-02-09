@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackly Bank | Secure & Smart Banking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== LOADER STYLES ===== */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #003366;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .stackly-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loader-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .loader-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #FFFFFF, #E6F0FF);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #003366;
+            font-weight: 800;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .loader-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .loader-text span {
+            color: #FFC107;
+        }
+
+        .loader-progress {
+            width: 200px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #FFC107;
+            animation: loading 2s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== CSS RESET & BASE STYLES ===== */
+        :root {
+            --primary-blue: #003366;
+            --secondary-blue: #00509E;
+            --accent-gold: #FFC107;
+            --light-blue: #E6F0FF;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #F5F7FA;
+            --white: #FFFFFF;
+            --success: #28A745;
+            --warning: #DC3545;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: 4px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-gold {
+            background-color: var(--accent-gold);
+            color: var(--dark-gray);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        /* Removed the yellow underline */
+        .section-title h2::after {
+            display: none;
+        }
+
+        .section-title p {
+            color: var(--medium-gray);
+            max-width: 700px;
+            margin: 0.5rem auto 0;
+        }
+
+        /* ===== HEADER & NAVIGATION ===== */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transform: translateY(0) !important; /* Fixed header */
+            transition: none !important; /* Remove any transition that might cause movement */
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 48, 135, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+        }
+
+        .logo-text span {
+            color: var(--accent-gold);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 5px 0;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-gold);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 30px;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-blue);
+            z-index: 1002;
+        }
+
+        /* ===== MOBILE MENU (FULL PAGE) ===== */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(13, 102, 190, 0.98);
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+        }
+
+        .mobile-menu-overlay.active {
+            display: flex;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 2rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 25px;
+        }
+
+        .mobile-nav-links a {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--white);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .mobile-nav-links a:hover {
+            color: var(--accent-gold);
+            transform: translateX(10px);
+        }
+
+        .mobile-menu-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: linear-gradient(rgba(0, 51, 102, 0.85), rgba(0, 80, 158, 0.9)), url('bank1.webp');
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 160px 0 100px;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+            margin-top: 80px; /* Account for fixed header */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            animation: slideUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            animation: slideUp 1s ease-out 0.5s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            animation: slideUp 1s ease-out 0.7s both;
+        }
+
+        /* ===== SECTIONS COMMON STYLES ===== */
+        section {
+            padding: 80px 0;
+            overflow: hidden;
+        }
+
+        .section-light {
+            background-color: var(--white);
+        }
+
+        .section-dark {
+            background-color: var(--light-blue);
+        }
+
+        /* ===== SERVICES SECTION ===== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(0, 80, 158, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary-blue);
+            font-size: 2rem;
+            transition: var(--transition);
+        }
+
+        .service-card:hover .service-icon {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            transform: rotateY(180deg);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        /* ===== DIGITAL BANKING SECTION ===== */
+        .digital-banking {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .digital-content {
+            flex: 1;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideRight 0.8s ease-out 0.3s forwards;
+        }
+
+        @keyframes slideRight {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .digital-media {
+            flex: 1;
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideLeft 0.8s ease-out 0.5s forwards;
+        }
+
+        @keyframes slideLeft {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .digital-media img {
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .features-list {
+            margin-top: 25px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .features-list i {
+            color: var(--success);
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* ===== PRODUCTS SECTION ===== */
+        .products-slider {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 10px 40px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-blue) var(--light-gray);
+        }
+
+        .products-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .products-slider::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .products-slider::-webkit-scrollbar-thumb {
+            background-color: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        .product-card {
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .product-badge {
+            background-color: var(--accent-gold);
+            color: var(--dark-gray);
+            padding: 8px 15px;
+            display: inline-block;
+            font-weight: 600;
+            border-radius: 0 0 5px 0;
+        }
+
+        .product-img {
+            height: 180px;
+            overflow: hidden;
+            background-color: var(--light-blue); /* Fallback for image loading */
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
+        }
+
+        .product-content {
+            padding: 25px;
+        }
+
+        .product-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+
+        /* ===== VIDEO SECTION ===== */
+        .video-section {
+            position: relative;
+        }
+
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: zoomIn 1s ease-out 0.3s forwards;
+        }
+
+        @keyframes zoomIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .video-placeholder {
+            position: relative;
+            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-blue));
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .video-placeholder i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+            transition: var(--transition);
+        }
+
+        .video-placeholder:hover i {
+            transform: scale(1.2);
+        }
+
+        .video-placeholder h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* YouTube Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .video-modal.active {
+            display: flex;
+        }
+
+        .video-modal-content {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .close-video-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: var(--white);
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-video-modal:hover {
+            color: var(--accent-gold);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 30px 20px;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .stat-item:hover .stat-number,
+        .stat-item:hover .stat-text {
+            color: var(--white);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .stat-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--medium-gray);
+            transition: var(--transition);
+        }
+
+        /* ===== TESTIMONIALS SECTION ===== */
+        .testimonials-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial-slide {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.8s ease-out 0.3s forwards;
+        }
+
+        .testimonial-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 25px;
+            color: var(--medium-gray);
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .testimonial-text::before, .testimonial-text::after {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-gold);
+            position: absolute;
+            opacity: 0.5;
+        }
+
+        .testimonial-text::before {
+            top: -20px;
+            left: -10px;
+        }
+
+        .testimonial-text::after {
+            bottom: -40px;
+            right: -10px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--light-blue);
+        }
+
+        .author-info h4 {
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+        }
+
+        .author-info p {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        /* ===== CONTACT SECTION ===== */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .contact-info {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideRight 0.8s ease-out 0.3s forwards;
+        }
+
+        .contact-form {
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideLeft 0.8s ease-out 0.5s forwards;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 80, 158, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 80, 158, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding-top: 70px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding-bottom: 50px;
+        }
+
+        .footer-logo .logo {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            justify-content: flex-start;
+            color: var(--white); /* White text for visibility */
+        }
+
+        .footer-logo .logo-icon {
+            background: linear-gradient(135deg, #FFFFFF, #E6F0FF);
+            color: var(--primary-blue);
+        }
+
+        .footer-logo .logo-text span {
+            color: var(--accent-gold);
+        }
+
+        .footer-logo p {
+            opacity: 0.8;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent-gold);
+            color: var(--dark-gray);
+            transform: translateY(-5px);
+        }
+
+        .footer-heading {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: var(--accent-gold);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent-gold);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+
+        .newsletter p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .newsletter-form input {
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .newsletter-form .btn {
+            align-self: flex-start;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* ===== RESPONSIVE STYLES ===== */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .digital-banking {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .digital-content, .digital-media {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .main-nav {
+                display: none;
+            }
+            
+            .hero {
+                padding: 140px 0 80px;
+                margin-top: 70px;
+            }
+            
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .video-placeholder {
+                height: 350px;
+            }
+            
+            .testimonial-slide {
+                padding: 30px 20px;
+            }
+            
+            .footer-container {
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .service-card, .product-card, .stat-item {
+                padding: 25px 20px;
+            }
+            
+            .video-placeholder {
+                height: 250px;
+            }
+            
+            .video-placeholder h3 {
+                font-size: 1.5rem;
+            }
+            
+            .video-placeholder i {
+                font-size: 3.5rem;
+            }
+            
+            .btn {
+                padding: 10px 22px;
+            }
+        }
+
+        /* Ensure no horizontal scrolling on mobile */
+        @media (max-width: 768px) {
+            body, html {
+                overflow-x: hidden;
+                width: 100%;
+                position: relative;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .products-slider {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== LOADER ===== -->
+    <div class="loader-container" id="loader">
+        <div class="stackly-loader">
+            <div class="loader-logo">
+                <div class="loader-icon">S</div>
+                <div class="loader-text">Stackly<span>Bank</span></div>
+            </div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">Stackly<span>Bank</span></div>
+            </a>
+            
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="404.html">Accounts</a></li>
+                    <li><a href="404.html">Loans</a></li>
+                    <li><a href="404.html">Cards</a></li>
+                    <li><a href="404.html">Investments</a></li>
+                    <li><a href="404.html">Insurance</a></li>
+                    <li><a href="404.html">Services</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <a href="404.html" class="btn btn-outline">Net Banking</a>
+                    <a href="404.html" class="btn">Open Account</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== MOBILE MENU OVERLAY ===== -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <div class="mobile-menu-close" id="mobileMenuClose">
+            <i class="fas fa-times"></i>
+        </div>
+        
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="404.html">Accounts</a></li>
+            <li><a href="404.html">Loans</a></li>
+            <li><a href="404.html">Cards</a></li>
+            <li><a href="404.html">Investments</a></li>
+            <li><a href="404.html">Insurance</a></li>
+            <li><a href="404.html">Services</a></li>
+        </ul>
+        
+        <div class="mobile-menu-actions">
+            <a href="404.html" class="btn btn-outline">Net Banking</a>
+            <a href="404.html" class="btn btn-gold">Open Account</a>
+        </div>
+    </div>
+
+    <!-- ===== VIDEO MODAL ===== -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-modal-content">
+            <div class="close-video-modal" id="closeVideoModal">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="video-wrapper">
+                <iframe id="youtubeVideo" src="https://www.youtube.com/embed/VIDEO_ID_HERE?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Banking Made Simple, Secure & Smart</h1>
+                <p>Join millions who trust Stackly Bank for their financial journey. Experience next-generation banking with cutting-edge security and innovative solutions designed for your modern lifestyle.</p>
+                <div class="hero-buttons">
+                    <a href="404.html" class="btn btn-gold">Open Digital Account</a>
+                    <a href="404.html" class="btn btn-outline">Explore Products</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES SECTION ===== -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Banking Services</h2>
+                <p>Comprehensive financial solutions designed to meet all your personal and business banking needs.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Banking</h3>
+                    <p>Bank on the go with our secure and feature-rich mobile banking app. Transfer funds, pay bills, and manage accounts effortlessly.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Credit Cards</h3>
+                    <p>Choose from a range of credit cards with exciting rewards, cashback offers, and exclusive lifestyle benefits.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">Apply Now</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Home Loans</h3>
+                    <p>Turn your dream home into reality with our flexible home loan options, attractive interest rates, and quick approval.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">Check Eligibility</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Investment Plans</h3>
+                    <p>Grow your wealth with our diverse investment options including mutual funds, fixed deposits, and portfolio management.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">Invest Today</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Insurance</h3>
+                    <p>Secure your future with comprehensive life, health, vehicle, and travel insurance policies tailored to your needs.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">Get Protected</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Business Banking</h3>
+                    <p>Power your business with specialized banking solutions, working capital finance, and cash management services.</p>
+                    <a href="404.html" class="btn" style="margin-top: 15px;">For Business</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DIGITAL BANKING SECTION ===== -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="digital-banking">
+                <div class="digital-content">
+                    <div class="section-title" style="text-align: left;">
+                        <h2>Digital Banking Experience</h2>
+                        <p>Bank anytime, anywhere with our secure and intuitive digital platforms designed for your convenience.</p>
+                    </div>
+                    
+                    <p>Our digital banking services provide seamless access to all your financial needs through multiple channels. With state-of-the-art security features and user-friendly interfaces, managing your money has never been easier.</p>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> 100% secure banking with multi-factor authentication</li>
+                        <li><i class="fas fa-check-circle"></i> Instant fund transfers 24/7</li>
+                        <li><i class="fas fa-check-circle"></i> Bill payments and recharges in seconds</li>
+                        <li><i class="fas fa-check-circle"></i> Real-time account alerts and notifications</li>
+                        <li><i class="fas fa-check-circle"></i> Investment management on the go</li>
+                    </ul>
+                    
+                    <a href="404.html" class="btn" style="margin-top: 20px;">Explore Digital Banking</a>
+                </div>
+                
+                <div class="digital-media">
+                    <img src="bank2.webp" alt="Digital Banking App Interface">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRODUCTS SECTION ===== -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Products</h2>
+                <p>Discover our most popular banking products designed to simplify your financial life.</p>
+            </div>
+            
+            <div class="products-slider">
+                <div class="product-card">
+                    <div class="product-badge">Most Popular</div>
+                    <div class="product-img">
+                        <img src="bank3.webp" alt="Stackly Savings Account" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRTVGMEZGIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwMzM2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlNhdmluZ3MgQWNjb3VudDwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <div class="product-content">
+                        <h3>Digital Savings Account</h3>
+                        <p>Open a 100% digital savings account in just 5 minutes with KYC. Enjoy high interest rates and zero balance requirements.</p>
+                        <a href="404.html" class="btn" style="width: 100%; margin-top: 15px;">Open Account</a>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">Low Interest</div>
+                    <div class="product-img">
+                        <img src="bank4.webp" alt="Personal Loan" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRTVGMEZGIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwMzM2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBlcnNvbmFsIExvYW48L3RleHQ+PC9zdmc+';">
+                    </div>
+                    <div class="product-content">
+                        <h3>Personal <br>Loan </h3>
+                        <p>Get instant personal loans up to ₹25 lakhs for all your needs. Quick disbursal with minimal documentation.</p>
+                        <a href="404.html" class="btn" style="width: 100%; margin-top: 15px;">Apply Now</a>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">Premium</div>
+                    <div class="product-img">
+                        <img src="bank5.webp" alt="Credit Card" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRTVGMEZGIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwMzM2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBsYXRpbnVtIENyZWRpdCBDYXJkPC90ZXh0Pjwvc3ZnPg==';">
+                    </div>
+                    <div class="product-content">
+                        <h3>Platinum Credit <br> Card</h3>
+                        <p>Premium credit card with exclusive benefits, reward points, and complimentary airport lounge access.</p>
+                        <a href="404.html" class="btn" style="width: 100%; margin-top: 15px;">Apply for Card</a>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">Secure</div>
+                    <div class="product-img">
+                        <img src="bank6.webp" alt="Insurance" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRTVGMEZGIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwMzM2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkluc3VyYW5jZTwvdGV4dD48L3N2Zz4=';">
+                    </div>
+                    <div class="product-content">
+                        <h3>Comprehensive Insurance</h3>
+                        <p>Secure your future with our comprehensive life, health, and vehicle insurance policies at competitive premiums.</p>
+                        <a href="404.html" class="btn" style="width: 100%; margin-top: 15px;">Get Quote</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== VIDEO SECTION ===== -->
+    <section class="section-dark video-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>How Stackly Bank Works</h2>
+                <p>Watch our short video to understand how easy and secure banking with Stackly can be.</p>
+            </div>
+            
+            <div class="video-container" id="videoTrigger">
+                <div class="video-placeholder">
+                    <i class="fas fa-play-circle"></i>
+                    <h3>Secure Banking Experience</h3>
+                    <p>Learn about our security features and digital banking capabilities</p>
+                    <button class="btn btn-gold" style="margin-top: 20px;" id="watchVideoBtn">Watch Full Video</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== STATS SECTION ===== -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Achievements</h2>
+                <p>Trusted by millions of customers across the country for their banking needs.</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10M+</div>
+                    <div class="stat-text">Happy Customers</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-text">Branches Across India</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-text">Customer Support</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-text">Customer Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Customers Say</h2>
+                <p>Hear from our satisfied customers about their banking experience with Stackly.</p>
+            </div>
+            
+            <div class="testimonials-container">
+                <div class="testimonial-slide">
+                    <div class="testimonial-text">
+                        Stackly Bank has transformed my banking experience. Their mobile app is incredibly user-friendly, and I can complete all my transactions within minutes. The customer support team is always helpful and responsive.
+                    </div>
+                    
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="bank7.webp" alt="Customer Avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNFNUYwRkYiLz48dGV4dCB4PSIzMCIgeT0iMzUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwMzM2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UFM8L3RleHQ+PC9zdmc+';">
+                        </div>
+                        <div class="author-info">
+                            <h4>Priya Sharma</h4>
+                            <p>Customer since 2019</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT SECTION ===== -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Get in touch with us for any queries or assistance with our banking services.</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Get in Touch</h3>
+                    <p>Have questions about our products or services? Our team is here to help you with all your banking needs.</p>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Head Office</h4>
+                            <p>Stackly Tower, Bandra Kurla Complex, Mumbai - 400051</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Phone Number</h4>
+                            <p>1800-123-4567 (Toll-Free)</p>
+                            <p>+91-22-12345678 (International)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4>Email Address</h4>
+                            <p>support@stacklybank.com</p>
+                            <p>info@stacklybank.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Your Message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-logo">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">S</div>
+                        <div class="logo-text">Stackly<span>Bank</span></div>
+                    </a>
+                    <p>India's leading private sector bank offering a wide range of banking products and financial services to individual and corporate customers.</p>
+                    
+                    <div class="social-links">
+                        <a href="404.html"><i class="fab fa-facebook-f"></i></a>
+                        <a href="404.html"><i class="fab fa-twitter"></i></a>
+                        <a href="404.html"><i class="fab fa-instagram"></i></a>
+                        <a href="404.html"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="404.html"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="404.html">Accounts</a></li>
+                        <li><a href="404.html">Loans</a></li>
+                        <li><a href="404.html">Cards</a></li>
+                        <li><a href="404.html">Investments</a></li>
+                        <li><a href="404.html">Insurance</a></li>
+                        <li><a href="404.html">Services</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4 class="footer-heading">Contact Info</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> Stackly Tower, Mumbai</li>
+                        <li><i class="fas fa-phone-alt" style="margin-right: 8px;"></i> 1800-123-4567</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 8px;"></i> support@stacklybank.com</li>
+                        <li><i class="fas fa-clock" style="margin-right: 8px;"></i> Mon-Sat: 9AM to 6PM</li>
+                    </ul>
+                </div>
+                
+                <div class="newsletter">
+                    <h4 class="footer-heading">Newsletter</h4>
+                    <p>Subscribe to our newsletter to get updates on new products and exclusive offers.</p>
+                    
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your Email Address" required>
+                        <button type="submit" class="btn btn-gold">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; <span id="currentYear"></span> Stackly Bank Ltd. All Rights Reserved. | RBI Registered Bank</p>
+                <p style="margin-top: 10px;">Registered Office: Stackly Tower, Bandra Kurla Complex, Mumbai - 400051</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== LOADER FUNCTIONALITY =====
+        const loader = document.getElementById('loader');
+        
+        window.addEventListener('load', () => {
+            // Hide loader after 2 seconds
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 2000);
+        });
+        
+        // ===== MOBILE MENU FUNCTIONALITY =====
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        
+        mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        });
+        
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        });
+        
+        // Close menu when clicking on a link
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+        
+        // ===== VIDEO MODAL FUNCTIONALITY =====
+        const videoTrigger = document.getElementById('videoTrigger');
+        const watchVideoBtn = document.getElementById('watchVideoBtn');
+        const videoModal = document.getElementById('videoModal');
+        const closeVideoModal = document.getElementById('closeVideoModal');
+        const youtubeVideo = document.getElementById('youtubeVideo');
+        
+        // YouTube video ID (replace with your actual video ID)
+        const youtubeVideoId = 'Lc3aA4fqRkE'; // Example: Stackly Bank promotional video
+        
+        // Set the YouTube video URL with the correct ID
+        youtubeVideo.src = `https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1`;
+        
+        // Open video modal when clicking on video section or button
+        videoTrigger.addEventListener('click', openVideoModal);
+        watchVideoBtn.addEventListener('click', openVideoModal);
+        
+        function openVideoModal() {
+            videoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Play the video when modal opens
+            youtubeVideo.src = youtubeVideo.src.replace('autoplay=0', 'autoplay=1');
+        }
+        
+        // Close video modal
+        closeVideoModal.addEventListener('click', closeVideoModalFunc);
+        
+        // Close modal when clicking outside the video
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                closeVideoModalFunc();
+            }
+        });
+        
+        function closeVideoModalFunc() {
+            videoModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Pause the video when modal closes
+            youtubeVideo.src = youtubeVideo.src.replace('autoplay=1', 'autoplay=0');
+        }
+        
+        // ===== SCROLL ANIMATIONS =====
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // ===== INITIALIZE PAGE =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observe elements with animations
+            const animatedElements = document.querySelectorAll('.service-card, .product-card, .stat-item, .testimonial-slide, .video-container, .digital-content, .digital-media, .contact-info, .contact-form');
+            
+            animatedElements.forEach(el => {
+                // Set animation to paused initially
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+            
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Form submission handlers
+            // document.getElementById('contactForm').addEventListener('submit', function(e) {
+            //     e.preventDefault();
+            //     alert('Thank you for your message! We will get back to you soon.');
+            //     this.reset();
+            // });
+            
+            // document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+            //     e.preventDefault();
+            //     alert('Thank you for subscribing to our newsletter!');
+            //     this.reset();
+            // });
+            
+            // Handle all buttons redirecting to 404 (except video button)
+            document.querySelectorAll('a.btn').forEach(button => {
+                if (!button.getAttribute('href') || button.getAttribute('href') === '#') {
+                    button.setAttribute('href', '404.html');
+                }
+            });
+            
+            // Image fallback for product images
+            document.querySelectorAll('.product-img img').forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    // Create a fallback background
+                    this.parentElement.style.backgroundColor = '#E6F0FF';
+                    this.parentElement.style.display = 'flex';
+                    this.parentElement.style.alignItems = 'center';
+                    this.parentElement.style.justifyContent = 'center';
+                    this.parentElement.innerHTML = '<div style="color: #003366; font-weight: bold; font-size: 1.2rem; text-align: center;">' + this.alt + '</div>';
+                });
+            });
+            
+            // FIXED HEADER - Ensure it doesn't move on scroll
+            const header = document.querySelector('header');
+            let lastScrollTop = 0;
+            
+            window.addEventListener('scroll', () => {
+                // Header is always fixed - no movement on scroll
+                header.style.transform = 'translateY(0)';
+                header.style.position = 'fixed';
+                header.style.top = '0';
+                header.style.left = '0';
+                header.style.width = '100%';
+            });
+        });
+        
+        // ===== PRELOAD IMAGES =====
+        function preloadImages() {
+            const imageUrls = [
+                'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+                'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1550565118-3a14e8d0386f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1583753075962-2c6c0f453c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1552083375-1447ce616485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://randomuser.me/api/portraits/women/45.jpg'
+            ];
+            
+            imageUrls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+        }
+        
+        // Start preloading images after page loads
+        window.addEventListener('load', preloadImages);
+    </script>
+</body>
+</html>

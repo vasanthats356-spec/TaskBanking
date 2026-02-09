@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Stackly Bank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003366, #00509E);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #003366;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .logo-text span {
+            color: #FFC107;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FFC107, white);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 20px 0;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { text-shadow: 0 0 10px rgba(255, 193, 7, 0.3); }
+            to { text-shadow: 0 0 30px rgba(255, 193, 7, 0.7); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #FFC107;
+            color: #003366;
+            font-weight: 600;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.5);
+            background: #FFD54F;
+        }
+
+        .bank-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .bank-icons i {
+            font-size: 1.5rem;
+            color: #FFC107;
+            animation: bounce 2s infinite;
+        }
+
+        .bank-icons i:nth-child(1) { animation-delay: 0.1s; }
+        .bank-icons i:nth-child(2) { animation-delay: 0.2s; }
+        .bank-icons i:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            .error-code { font-size: 6rem; }
+            h1 { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon">S</div>
+            <div class="logo-text">Stackly<span>Bank</span></div>
+        </div>
+        
+        <div class="error-code">404</div>
+        
+        <h1>Page Not Found</h1>
+        
+        <p>The page you're looking for doesn't exist or has been moved. Return to our homepage to continue banking with Stackly.</p>
+        
+        <a href="index.html" class="home-btn">
+            <i class="fas fa-home"></i>
+            <span>Back to Home</span>
+        </a>
+        
+        <div class="bank-icons">
+            <i class="fas fa-credit-card"></i>
+            <i class="fas fa-shield-alt"></i>
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+    </div>
+    
+</body>
+</html>
